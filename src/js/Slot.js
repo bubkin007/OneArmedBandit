@@ -1,6 +1,6 @@
 import Reel from "./Reel.js";
 import Symbol from "./Symbol.js";
-
+import Twa from "./twa.js";
 export default class Slot {
   constructor(domElement, config = {}) {
     Symbol.preload();
@@ -18,11 +18,8 @@ export default class Slot {
       }
       return array;
   }
-  
   this.currentSymbols = fillArrayWithSequentialSymbols(Symbol.symbols, 5, 3);
   this.nextSymbols = fillArrayWithSequentialSymbols(Symbol.symbols, 5, 3);
-  
-
 
     this.container = domElement;
 
@@ -33,19 +30,13 @@ export default class Slot {
 
     this.spinButton = document.getElementById("spin");
     this.spinButton.addEventListener("click", () => this.spin());
-
     this.autoPlayCheckbox = document.getElementById("autoplay");
-
     if (config.inverted) {
       this.container.classList.add("inverted");
     }
-
     this.config = config;
   }
-
-
-
-  spin() {
+  async spin() {
     this.currentSymbols = this.nextSymbols;
     this.nextSymbols = [
       [Symbol.random(), Symbol.random(), Symbol.random()],
@@ -54,30 +45,22 @@ export default class Slot {
       [Symbol.random(), Symbol.random(), Symbol.random()],
       [Symbol.random(), Symbol.random(), Symbol.random()],
     ];
-
     this.onSpinStart(this.nextSymbols);
-
-    return Promise.all(
+    await Promise.all(
       this.reels.map((reel) => {
         reel.renderSymbols(this.nextSymbols[reel.idx]);
         return reel.spin();
       })
-    ).then(() => this.onSpinEnd(this.nextSymbols));
+    );
+    return this.onSpinEnd(this.nextSymbols);
   }
-
   onSpinStart(symbols) {
     this.spinButton.disabled = true;
-
     this.config.onSpinStart?.(symbols);
   }
-
   onSpinEnd(symbols) {
     this.spinButton.disabled = false;
-
     this.config.onSpinEnd?.(symbols);
-
-    if (this.autoPlayCheckbox.checked) {
-      return window.setTimeout(() => this.spin(), 200);
-    }
+    Twa.tgWebApp.showConfirm('No win. Spin again?',Twa.callbackTester)
   }
 }

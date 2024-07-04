@@ -5,6 +5,10 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 
 module.exports = {
+  devServer: {
+    server: 'https',
+    port: 443
+  },
   entry: ["./src/js/index.js", "./src/css/style.css"],
   output: {
     filename: "bundle.[contenthash].js",

@@ -7,7 +7,7 @@
   "repository": "johakr/html5-slot-machine",
   "scripts": {
     "build": "webpack --mode production && echo 'gitdir: ../.git/modules/OneArmedBanditTWA' > OneArmedBanditTWA/.git",
-    "start": "webpack serve --mode development",
+    "start": "webpack server --mode development ",
     "prepare": "husky install"
   },
   "devDependencies": {
