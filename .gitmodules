@@ -1,4 +1,4 @@
 [submodule "OneArmedBanditTWA"]
 	path = OneArmedBanditTWA
-	url = https://github.com/bubkin007/OneArmedBanditTWA
+	url = https://github.com/bubkin007/OneArmedBanditTWA.git
 	branch = mainsubmodule
