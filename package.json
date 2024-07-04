@@ -6,7 +6,7 @@
   "author": "Johannes Kronmüller <hello@johakr.me> (https://johakr.me/)",
   "repository": "johakr/html5-slot-machine",
   "scripts": {
-    "build": "webpack --mode production || echo 'gitdir: ../.git/modules/OneArmedBanditTWA'  >  ./OneArmedBanditTWA/.git ",
+    "build": "webpack --mode production ",
     "start": "webpack serve --mode development",
     "prepare": "husky install"
   },
