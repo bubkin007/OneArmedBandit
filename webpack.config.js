@@ -7,7 +7,7 @@ module.exports = {
   entry: ["./src/js/index.js", "./src/css/style.css"],
   output: {
     filename: "bundle.[contenthash].js",
-    path: path.resolve(__dirname, "OneArmedBanditTWA"),
+    path: path.resolve(__dirname, "OneArmedBanditTWA/publish"),
   },
   performance: {
     hints: false,
