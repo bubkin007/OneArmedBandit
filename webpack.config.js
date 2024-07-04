@@ -3,19 +3,16 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
+
 module.exports = {
   entry: ["./src/js/index.js", "./src/css/style.css"],
   output: {
     filename: "bundle.[contenthash].js",
-    path: path.resolve(__dirname, "OneArmedBanditTWA/publish"),
+    path: path.resolve(__dirname, "OneArmedBanditTWA"),
+    clean: false,
   },
   performance: {
     hints: false,
-  },
-  devServer: {
-    headers: {
-      "Cache-Control": "no-store",
-    },
   },
   plugins: [
     new CleanWebpackPlugin(),
