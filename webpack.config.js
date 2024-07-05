@@ -28,6 +28,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
+      favicon: "./src/assets/favicon.ico",
       template: "./src/index.html",
     }),
     new MiniCssExtractPlugin({
@@ -41,7 +42,7 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.(png|jpg|gif|svg|ico)$/,
         type: "asset/resource",
         generator: {
           filename: 'assets/[hash][ext][query]'

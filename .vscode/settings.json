@@ -1,3 +1,7 @@
 {
-    "liveServer.settings.port": 445
+  "liveServer.settings.port": 445,
+  "files.exclude": {
+    "key": true,
+    ".vscode": true
+  }
 }
