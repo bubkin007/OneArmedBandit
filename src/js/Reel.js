@@ -55,6 +55,9 @@ export default class Reel {
   }
 
   spin() {
+    if(!tonConnectUI.connected){
+      return;
+    }
     const animationPromise = new Promise(
       (resolve) => (this.animation.onfinish = resolve)
     );

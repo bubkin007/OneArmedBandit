@@ -3,13 +3,13 @@
   <head>
     <title>One Armed Bandit</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/bootstrap@5.2.3/dist/css/bootstrap-reboot.min.css"
-    />
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.2.3/dist/css/bootstrap-reboot.min.css"/>
   </head>
   <body>
+    </div>
     <div id="slot">
+      <div id="balance">BALANCE<span id="count">NULL</span></div>
       <div id="jackpot">TELEGRAM MINI APP<span id="jp">SLOT</span></div>
       <div id="reels">
         <div class="reel"></div>
@@ -20,8 +20,26 @@
       </div>
       <div id="controls">
         <button type="button" id="spin" class="button">
-          <span>SPIN</span>
+          <span id="spintext">SPIN</span>
+          <div id="ton-connect"></div>
         </button>
+        <script>
+          const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+              manifestUrl: 'https://bubkin007.github.io/bubkin007/tonconnect-manifest.json',
+              buttonRootId: 'spin'
+          });
+      </script>
+        <script>
+          async function connectToWallet() {
+              const connectedWallet = await tonConnectUI.connectWallet();
+              // Do something with connectedWallet if needed
+              console.log(connectedWallet);
+          }
+          // Call the function
+          connectToWallet().catch(error => {
+              console.error("Error connecting to wallet:", error);
+          });
+      </script>
       </div>
     </div>
   </body>
