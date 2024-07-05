@@ -23,23 +23,6 @@
           <span id="spintext">SPIN</span>
           <div id="ton-connect"></div>
         </button>
-        <script>
-          const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-              manifestUrl: 'https://bubkin007.github.io/bubkin007/tonconnect-manifest.json',
-              buttonRootId: 'spin'
-          });
-      </script>
-        <script>
-          async function connectToWallet() {
-              const connectedWallet = await tonConnectUI.connectWallet();
-              // Do something with connectedWallet if needed
-              console.log(connectedWallet);
-          }
-          // Call the function
-          connectToWallet().catch(error => {
-              console.error("Error connecting to wallet:", error);
-          });
-      </script>
       </div>
     </div>
   </body>
