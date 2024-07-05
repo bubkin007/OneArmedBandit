@@ -1,9 +1,9 @@
-let tgWebApp = window.Telegram.WebApp;
-tgWebApp.expand();
+let app = window.Telegram.WebApp;
+app.expand();
 let message = "SPIN?"
 function callbackTester(callback) {
     if(callback){
         spin.click();
     }
   }
-tgWebApp.showConfirm(message,callbackTester)
+  app.showConfirm(message,callbackTester)

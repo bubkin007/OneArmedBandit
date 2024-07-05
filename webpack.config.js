@@ -6,8 +6,15 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   devServer: {
-    server: 'https',
-    port: 443
+    port: 443,
+    allowedHosts: 'all',
+    server: {
+      type: 'https',
+      options: {
+        key: './key/localhost-key.pem',
+        cert: './key/localhost-cert.pem'
+      }
+    }
   },
   entry: ["./src/js/index.js", "./src/css/style.css"],
   output: {

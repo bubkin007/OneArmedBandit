@@ -1,10 +1,9 @@
 import Reel from "./Reel.js";
 import Symbol from "./Symbol.js";
-import Twa from "./twa.js";
+
 export default class Slot {
   constructor(domElement, config = {}) {
     Symbol.preload();
-
     function fillArrayWithSequentialSymbols(symbols, rows, columns) {
       let array = [];
       let index = 0;
@@ -61,6 +60,12 @@ export default class Slot {
   onSpinEnd(symbols) {
     this.spinButton.disabled = false;
     this.config.onSpinEnd?.(symbols);
-    Twa.tgWebApp.showConfirm('No win. Spin again?',Twa.callbackTester)
+   let app = window.Telegram.WebApp;
+    app.showConfirm('No win. Spin again?',callbackTester)
+  }
+}
+function callbackTester(callback) {
+  if(callback){
+      spin.click();
   }
 }
