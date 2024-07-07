@@ -1,29 +1,77 @@
-export  class Slot {
+
+const cache = {};
+
+
+
+
+const animateCSS = (element, animation, prefix = 'animate__') =>
+  // We create a Promise and return it
+  new Promise((resolve, reject) => {
+    const animationName = `${prefix}${animation}`;
+    const node = document.querySelector(element);
+
+    node.classList.add(`${prefix}animated`, animationName);
+
+    // When the animation ends, we clean the classes and resolve the Promise
+    function handleAnimationEnd(event) {
+      event.stopPropagation();
+      node.classList.remove(`${prefix}animated`, animationName);
+      resolve('Animation ended');
+    }
+
+    node.addEventListener('animationend', handleAnimationEnd, {once: true});
+  });
+
+
+function loadExternalScript(url) {
+  const script = document.createElement('script');
+  document.head.appendChild(script);
+  script.src = url;
+}
+loadExternalScript('https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js');
+loadExternalScript('https://telegram.org/js/telegram-web-app.js');
+
+
+
+const imageContext = require.context('../assets/symbols', false, /\.(jpg|jpeg|png|webp|gif|svg)$/);
+const imageArray = imageContext.keys().map(imageContext);
+let icondir = '../assets/symbols';
+let symbols  = imageContext.keys().map(imageContext);
+
+
+function randomSymbol() {
+  return symbols[Math.floor(Math.random() * symbols.length)];
+}
+
+class Symbol {
+  constructor(name = randomSymbol()) {
+    this.name = name;
+    if (cache[name]) {
+      this.img = cache[name].cloneNode();
+    } 
+    else 
+    {
+      this.img = new Image();
+      this.img.src = name;
+      cache[name] = this.img;
+    }
+  }
+
+  static preload() {
+    symbols.forEach(symbol => new Symbol(symbol));
+  }
+}
+
+class Slot {
   constructor(domElement, config = {}) {
     Symbol.preload();
 
-    function fillArrayWithSequentialSymbols(symbols, rows, columns) {
-      let array = [];
-      let index = 0;
-      for (let i = 0; i < rows; i++) {
-          let row = [];
-          for (let j = 0; j < columns; j++) {
-              row.push(symbols[index % symbols.length]);
-              index++;
-          }
-          array.push(row);
-      }
-      return array;
-    }
-
-    this.currentSymbols = fillArrayWithSequentialSymbols(Symbol.symbols, 5, 3);
-    this.nextSymbols = fillArrayWithSequentialSymbols(Symbol.symbols, 5, 3);
-
+    this.currentSymbols = this.fillArrayWithSequentialSymbols(symbols, 5, 3);
+    this.nextSymbols = this.fillArrayWithSequentialSymbols(symbols, 5, 3);
     this.container = domElement;
 
     this.reels = Array.from(this.container.getElementsByClassName("reel")).map(
-      (reelContainer, idx) =>
-        new Reel(reelContainer, idx, this.currentSymbols[idx])
+      (reelContainer, idx) => new Reel(reelContainer, idx, this.currentSymbols[idx])
     );
 
     this.spinButton = document.getElementById("spin");
@@ -33,33 +81,39 @@ export  class Slot {
     if (config.inverted) {
       this.container.classList.add("inverted");
     }
-
     this.config = config;
+  }
+
+  fillArrayWithSequentialSymbols(symbols, rows, columns) {
+    const array = [];
+    let index = 0;
+    for (let i = 0; i < rows; i++) {
+      const row = [];
+      for (let j = 0; j < columns; j++) {
+        row.push(symbols[index % symbols.length]);
+        index++;
+      }
+      array.push(row);
+    }
+    return array;
   }
 
   spin() {
     this.currentSymbols = this.nextSymbols;
-    this.nextSymbols = [
-      [Symbol.random(), Symbol.random(), Symbol.random()],
-      [Symbol.random(), Symbol.random(), Symbol.random()],
-      [Symbol.random(), Symbol.random(), Symbol.random()],
-      [Symbol.random(), Symbol.random(), Symbol.random()],
-      [Symbol.random(), Symbol.random(), Symbol.random()],
-    ];
+    this.nextSymbols = Array.from({ length: 5 }, () => Array.from({ length: 3 }, () => randomSymbol()));
 
     this.onSpinStart(this.nextSymbols);
 
-     Promise.all(
-      this.reels.map((reel) => {
+    Promise.all(
+      this.reels.map(reel => {
         reel.renderSymbols(this.nextSymbols[reel.idx]);
         return reel.spin();
       })
-    );
-
-    return this.onSpinEnd(this.nextSymbols);
+    ).then(() => this.onSpinEnd(this.nextSymbols));
   }
 
   onSpinStart(symbols) {
+    document.querySelectorAll('img').forEach(img => img.className =' ');
     this.spinButton.disabled = true;
     this.config.onSpinStart?.(symbols);
   }
@@ -67,52 +121,14 @@ export  class Slot {
   onSpinEnd(symbols) {
     this.spinButton.disabled = false;
     this.config.onSpinEnd?.(symbols);
-    let app = window.Telegram.WebApp;
-    app.showConfirm('No win. Spin again?', callbackTester);
-  }
+
+    let animationname = 'animate__flip';
+document.querySelectorAll('img').forEach(img => img.className =' ');
+document.querySelectorAll('img').forEach(img => img.classList.add('animate__animated', animationname));
+}
 }
 
-function callbackTester(callback) {
-  if(callback){
-    spin.click();
-  }
-}
-
-const cache = {};
-
-export class Symbol {
-  constructor(name = Symbol.random()) {
-    this.name = name;
-    if (cache[name]) {
-      this.img = cache[name].cloneNode();
-    } else {
-      this.img = new Image();
-      this.img.src = require(`../assets/symbols/${name}.svg`);
-      cache[name] = this.img;
-    }
-  }
-
-  static preload() {
-    Symbol.symbols.forEach((symbol) => new Symbol(symbol));
-  }
-
-  static get symbols() {
-    return [
-      "bincoin_isometric_logo_3d",
-      "bitcoin-btc-cryptocurrency-svgrepo-com",
-      "ethereum-crypto-cryptocurrency-svgrepo-com",
-      "monero-crypto-cryptocurrency-coins-svgrepo-com",
-      "ripple-xrp-cryptocurrency-svgrepo-com",
-      "tether-crypto-cryptocurrency-svgrepo-com",
-    ];
-  }
-
-  static random() {
-    return this.symbols[Math.floor(Math.random() * this.symbols.length)];
-  }
-}
-
-export default class Reel {
+class Reel {
   constructor(reelContainer, idx, initialSymbols) {
     this.reelContainer = reelContainer;
     this.idx = idx;
@@ -125,12 +141,7 @@ export default class Reel {
       [
         { top: 0, filter: "blur(0)" },
         { filter: "blur(2px)", offset: 0.5 },
-        {
-          top: `calc((${Math.floor(this.factor) * 10} / 3) * -100% - (${
-            Math.floor(this.factor) * 10
-          } * 3px))`,
-          filter: "blur(0)",
-        },
+        { top: `calc((${Math.floor(this.factor) * 10} / 3) * -100% - (${Math.floor(this.factor) * 10} * 3px))`, filter: "blur(0)" },
       ],
       {
         duration: this.factor * 1000,
@@ -139,9 +150,7 @@ export default class Reel {
     );
     this.animation.cancel();
 
-    initialSymbols.forEach((symbol) =>
-      this.symbolContainer.appendChild(new Symbol(symbol).img)
-    );
+    initialSymbols.forEach(symbol => this.symbolContainer.appendChild(new Symbol(symbol).img));
   }
 
   get factor() {
@@ -164,15 +173,8 @@ export default class Reel {
   }
 
   spin() {
-    if(!tonConnectUI.connected){
-      return;
-    }
-    const animationPromise = new Promise(
-      (resolve) => (this.animation.onfinish = resolve)
-    );
-    const timeoutPromise = new Promise((resolve) =>
-      setTimeout(resolve, this.factor * 1000)
-    );
+    const animationPromise = new Promise(resolve => (this.animation.onfinish = resolve));
+    const timeoutPromise = new Promise(resolve => setTimeout(resolve, this.factor * 1000));
 
     this.animation.cancel();
     this.animation.play();
@@ -190,43 +192,94 @@ export default class Reel {
 }
 
 const config = {
-  inverted: true, // true: reels spin from top to bottom; false: reels spin from bottom to top
-  onSpinStart: (symbols) => {
-    console.log("onSpinStart", symbols);
-  },
-  onSpinEnd: (symbols) => {
-    console.log("onSpinEnd", symbols);
-  },
+  inverted: true,
+  onSpinStart: symbols => console.log("onSpinStart", symbols),
+  onSpinEnd: symbols => console.log("onSpinEnd", symbols),
 };
 
 const slot = new Slot(document.getElementById("slot"), config);
 
-let tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-  manifestUrl: 'https://bubkin007.github.io/bubkin007/tonconnect-manifest.json',
-  buttonRootId: 'spin'
-});
+//class="image-wrapper shine"
 
-function connectToWallet() {
-  const connectedWallet = tonConnectUI.connectWallet();
-  // Do something with connectedWallet if needed
-  console.log(connectedWallet);
-}
+let animationname = 'animate__flip';
+let animateinfinite= 'animate__infinite';
+let animatedcount = 'animate__repeat-2';
+let cssanimation = "cssanimation";
+let fadeIn = "fadeIn";
+let infinite = "infinite";
+let animate__animated = "animate__animated";
+let animate__rubberBand = "animate__rubberBand";
+document.querySelectorAll('img').forEach(img => img.className =' ');
+document.querySelectorAll('img').forEach(img => img.classList.add(animate__animated,animate__rubberBand,infinite));
+//////////
 
-// Call the function
-connectToWallet().catch(error => {
-  console.error("Error connecting to wallet:", error);
-});
+function toninit() {
+  let tonConnectUI;
 
-let app = window.Telegram.WebApp;
-app.expand();
+  function waitForElement() {
+    if (typeof window.TON_CONNECT_UI !== "undefined" && typeof window.TON_CONNECT_UI.TonConnectUI !== "undefined") {
+      tonConnectUI = new window.TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://bubkin007.github.io/bubkin007/tonconnect-manifest.json',
+        buttonRootId: 'spin',
+      });
 
-if(!tonConnectUI.connected){ 
-  let spintext = document.getElementById("spintext");
-  spintext.hidden = "true";
-  let message = "SPIN?";
-  function callbackTester(callback) {
-    if(callback){
-        spin.click();
+      function connectToWallet() {
+        tonConnectUI.connectWallet()
+          .then(connectedWallet => {
+            console.log(connectedWallet);
+          })
+          .catch(error => {
+            console.error("Error connecting to wallet:", error);
+          });
+      }
+
+      connectToWallet();
+    } else {
+      setTimeout(waitForElement, 250);
     }
+  }
+
+  let app;
+
+  function waitForWebAppElement() {
+    if (typeof window.Telegram !== "undefined" && typeof window.Telegram.WebApp !== "undefined") {
+      app = window.Telegram.WebApp;
+      app.expand();
+
+      let iqw = 0;
+      do {
+        sleep(2000);
+        try {
+          const message = "SPIN?";
+          app.showAlert(message);
+        } catch (e) { }
+        iqw = iqw + 1;
+      } while (iqw < 5);
+
+      if (!tonConnectUI.connected) {
+        const spinText = document.getElementById("spintext");
+        spinText.hidden = true;
+        const message = "SPIN?";
+
+        function callbackTester(callback) {
+          if (callback) {
+            document.getElementById("spin").click();
+          }
+        }
+      }
+    } else {
+      setTimeout(waitForWebAppElement, 250);
+    }
+  }
+
+  waitForElement();
+  waitForWebAppElement();
+
+  function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
   }
 }

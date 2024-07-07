@@ -1,0 +1,7 @@
+let type = 'animate__slideOutRight'
+document.querySelectorAll('img').forEach(img => img.className =' ');
+document.querySelectorAll('img:nth-child(odd)').forEach(img => 
+    img.classList.add(cssanimation,type,infinite).addEventListener('animationend', () => {
+        img
+      })
+);;

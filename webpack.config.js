@@ -3,7 +3,6 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-
 module.exports = {
   devServer: {
     port: 443,
@@ -20,7 +19,6 @@ module.exports = {
   output: {
     filename: "bundle.[contenthash].js",
     path: path.resolve(__dirname, "OneArmedBanditTWA"),
-    clean: false,
   },
   performance: {
     hints: false,
@@ -42,11 +40,11 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       {
-        test: /\.(png|jpg|gif|svg|ico)$/,
-        type: "asset/resource",
-        generator: {
-          filename: 'assets/[hash][ext][query]'
-        }
+        test: /\.(jpe?g|gif|png|svg|woff|ttf|wav|mp3)$/,
+                type: "asset/resource",
+                generator: {
+                    filename: 'icons/[hash][ext][query]'
+                }
       },
       {
         test: /\.js$/,
