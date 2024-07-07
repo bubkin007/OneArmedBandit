@@ -10,12 +10,6 @@ body {
 	justify-content: center;
 	font-size: 21.5px;
   }
-  @media only screen and (max-width: 1200px) {
-	body {
-		background: rgb(2,0,36);
-		background: linear-gradient(331deg, rgba(2,0,36,1) 0%, rgba(0,212,255,1) 100%);
-	}
-  }
   #reels {
 	display: flex;
 	width: 100vw;
@@ -33,107 +27,38 @@ body {
 	position: relative;
   }
   .reel > .icons > img {
+	margin: 19%;
 	position: relative;
     overflow: hidden;
-	
   }
   #controls {
-	height: 50px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 5px 30px;
-	padding-left: 44%;
   }
-  #controls label {
-	display: flex;
-	align-items: center;
-	margin: 0;
-  }
-  #controls label input {
-	margin-right: 5px;
-  }
-  input[type="checkbox"] {
-	width: 40px;
-	height: 40px;
-  }
-  #jackpot {
-	color: #d5ad6d;
-	font-size: 40px;
-	text-align: center;
-  }
-  #balance {
-	color: #d5ad6d;
-	font-size: 40px;
-	text-align: center;
-  }
-
   button#spin{
-	box-shadow:inset 0px 1px 0px 0px #a6827e;
-	background:linear-gradient(to bottom, #7d5d3b 5%, #634b30 100%);
-	background-color:#7d5d3b;
-	border-radius:35px;
-	border:1px solid #54381e;
+	width: 30%;
+	box-shadow: 0px 1px 0px 0px #fff6af;
+	background:linear-gradient(to bottom, #ffec64 5%, #ffab23 100%);
+	background-color:#ffec64;
+	border-radius:6px;
+	border:1px solid #ffaa22;
 	display:inline-block;
 	cursor:pointer;
-	color:#ffffff;
+	color:#333333;
 	font-family:Arial;
-	font-size:13px;
+	font-size:15px;
+	font-weight:bold;
 	padding:6px 24px;
 	text-decoration:none;
-	text-shadow:0px 1px 0px #4d3534;
+	text-shadow:0px 1px 0px #ffee66;
   }
-  .button#spin:hover {background-color: #3e8e41}
+.button#spin:hover {
+	background:linear-gradient(to bottom, #ffab23 5%, #ffec64 100%);
+	background-color:#ffab23;
+}
 
 .button#spin:active {
-  background-color: #3e8e41;
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
-
-
-
-
-.image-wrapper {
-	height: 12rem;
-	width: 12rem;
-	display: flex;
-	align-items: center;
-	text-align: center;
-	line-height: 1.6;
-
-	img {
-		height: auto;
-		max-width: 100%;
-	}
-}
-
-.shine {
-	position: relative;
-	overflow: hidden;
-	&::before {
-		background: linear-gradient(
-			to right,
-			fade_out(#fff, 1) 0%,
-			fade_out(#fff, 0.7) 100%
-		);
-		content: "";
-		display: block;
-		height: 100%;
-		left: -75%;
-		position: absolute;
-		top: 0;
-		transform: skewX(-25deg);
-		width: 50%;
-		z-index: 2;
-
-		animation: shine 1s;
-				animation-iteration-count: infinite;
-	}
-
-	@keyframes shine {
-		100% {
-			left: 125%;
-		}
-	}
+	position:relative;
+	top:1px;
 }

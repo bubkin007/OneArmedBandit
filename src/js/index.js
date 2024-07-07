@@ -1,27 +1,4 @@
-
 const cache = {};
-
-
-
-
-const animateCSS = (element, animation, prefix = 'animate__') =>
-  // We create a Promise and return it
-  new Promise((resolve, reject) => {
-    const animationName = `${prefix}${animation}`;
-    const node = document.querySelector(element);
-
-    node.classList.add(`${prefix}animated`, animationName);
-
-    // When the animation ends, we clean the classes and resolve the Promise
-    function handleAnimationEnd(event) {
-      event.stopPropagation();
-      node.classList.remove(`${prefix}animated`, animationName);
-      resolve('Animation ended');
-    }
-
-    node.addEventListener('animationend', handleAnimationEnd, {once: true});
-  });
-
 
 function loadExternalScript(url) {
   const script = document.createElement('script');
@@ -30,8 +7,6 @@ function loadExternalScript(url) {
 }
 loadExternalScript('https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js');
 loadExternalScript('https://telegram.org/js/telegram-web-app.js');
-
-
 
 const imageContext = require.context('../assets/symbols', false, /\.(jpg|jpeg|png|webp|gif|svg)$/);
 const imageArray = imageContext.keys().map(imageContext);
@@ -240,6 +215,10 @@ function toninit() {
   }
 
   let app;
+  app = window.Telegram.WebApp;
+  app.expand();
+
+
 
   function waitForWebAppElement() {
     if (typeof window.Telegram !== "undefined" && typeof window.Telegram.WebApp !== "undefined") {
