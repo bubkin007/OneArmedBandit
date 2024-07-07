@@ -8,6 +8,14 @@ function loadExternalScript(url) {
 loadExternalScript('https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js');
 loadExternalScript('https://telegram.org/js/telegram-web-app.js');
 
+
+let major = '1.';
+let minor = '1.';
+let release = '0.';
+let build = '43';
+var span = document.getElementById("version");
+span.textContent = major + minor + release + build;
+
 const imageContext = require.context('../assets/symbols', false, /\.(jpg|jpeg|png|webp|gif|svg)$/);
 const imageArray = imageContext.keys().map(imageContext);
 let icondir = '../assets/symbols';
@@ -184,8 +192,10 @@ let fadeIn = "fadeIn";
 let infinite = "infinite";
 let animate__animated = "animate__animated";
 let animate__rubberBand = "animate__rubberBand";
+let leScaleYIn = "leScaleYIn";
+let sequence = "sequence";
 document.querySelectorAll('img').forEach(img => img.className =' ');
-document.querySelectorAll('img').forEach(img => img.classList.add(animate__animated,animate__rubberBand,infinite));
+document.querySelectorAll('img').forEach(img => img.classList.add(animate__animated,animationname,animateinfinite));
 //////////
 
 function toninit() {
@@ -216,6 +226,7 @@ function toninit() {
 
   let app;
   app = window.Telegram.WebApp;
+  app.ready();
   app.expand();
 
 
