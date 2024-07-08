@@ -1,18 +1,22 @@
 const cache = {};
+let app;
 
 function loadExternalScript(url) {
   const script = document.createElement('script');
   document.head.appendChild(script);
   script.src = url;
+  return script;
 }
 loadExternalScript('https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js');
-loadExternalScript('https://telegram.org/js/telegram-web-app.js');
+//loadExternalScript('https://telegram.org/js/telegram-web-app.js');
 
-
+app = window.Telegram.WebApp;
+app.ready();
+app.expand();
 let major = '1.';
 let minor = '1.';
 let release = '0.';
-let build = '43';
+let build = '45';
 var span = document.getElementById("version");
 span.textContent = major + minor + release + build;
 
@@ -105,9 +109,8 @@ class Slot {
     this.spinButton.disabled = false;
     this.config.onSpinEnd?.(symbols);
 
-    let animationname = 'animate__flip';
-document.querySelectorAll('img').forEach(img => img.className =' ');
-document.querySelectorAll('img').forEach(img => img.classList.add('animate__animated', animationname));
+    document.querySelectorAll('img').forEach(img => img.className =' ');
+    document.querySelectorAll('img:nth-child(even)').forEach(img => img.classList.add(animateanimated,animationname,animateinfinite));
 }
 }
 
@@ -183,19 +186,31 @@ const config = {
 const slot = new Slot(document.getElementById("slot"), config);
 
 //class="image-wrapper shine"
+//document.querySelectorAll('.animation-item').forEach((e)=>{console.log(e.getAttribute('data-animation'))})
 
-let animationname = 'animate__flip';
-let animateinfinite= 'animate__infinite';
-let animatedcount = 'animate__repeat-2';
+
 let cssanimation = "cssanimation";
-let fadeIn = "fadeIn";
 let infinite = "infinite";
-let animate__animated = "animate__animated";
-let animate__rubberBand = "animate__rubberBand";
-let leScaleYIn = "leScaleYIn";
-let sequence = "sequence";
+let animateanimated = "animate__animated";
+let animateinfinite = "animate_infinite";
+let delay = "animate__delay-2s";
+let animarray =
+["bounce",
+"flash",
+"pulse",
+"rubberBand",
+"shakeX",
+"shakeY",
+"headShake",
+"swing",
+"tada",
+"wobble",
+"jello",
+"heartBeat"]
+
+let animationname = 'animate__'+animarray[Math.floor(Math.random() * animarray.length)]
 document.querySelectorAll('img').forEach(img => img.className =' ');
-document.querySelectorAll('img').forEach(img => img.classList.add(animate__animated,animationname,animateinfinite));
+document.querySelectorAll('img').forEach(img => img.classList.add(animateanimated,animationname,animateinfinite));
 //////////
 
 function toninit() {
@@ -224,46 +239,8 @@ function toninit() {
     }
   }
 
-  let app;
-  app = window.Telegram.WebApp;
-  app.ready();
-  app.expand();
-
-
-
-  function waitForWebAppElement() {
-    if (typeof window.Telegram !== "undefined" && typeof window.Telegram.WebApp !== "undefined") {
-      app = window.Telegram.WebApp;
-      app.expand();
-
-      let iqw = 0;
-      do {
-        sleep(2000);
-        try {
-          const message = "SPIN?";
-          app.showAlert(message);
-        } catch (e) { }
-        iqw = iqw + 1;
-      } while (iqw < 5);
-
-      if (!tonConnectUI.connected) {
-        const spinText = document.getElementById("spintext");
-        spinText.hidden = true;
-        const message = "SPIN?";
-
-        function callbackTester(callback) {
-          if (callback) {
-            document.getElementById("spin").click();
-          }
-        }
-      }
-    } else {
-      setTimeout(waitForWebAppElement, 250);
-    }
-  }
 
   waitForElement();
-  waitForWebAppElement();
 
   function sleep(milliseconds) {
     const date = Date.now();
